@@ -6,21 +6,21 @@ import os
 
 app = Flask(__name__)
 
-app.config['HOST'] = os.getenv('DB_HOST')
-app.config['PORT'] = os.getenv('DB_PORT')
-app.config['DBNAME'] = os.getenv('DB_DBNAME')
-app.config['USER'] = os.getenv('DB_USER')
-app.config['PASS'] = os.getenv('DB_PASS')
+# app.config['HOST'] = os.getenv('DB_HOST')
+# app.config['PORT'] = os.getenv('DB_PORT')
+# app.config['DBNAME'] = os.getenv('DB_DBNAME')
+# app.config['USER'] = os.getenv('DB_USER')
+# app.config['PASS'] = os.getenv('DB_PASS')
 
-app.config['HTTP_USER'] = os.getenv('HTTP_USER')
-app.config['HTTP_PASS'] = os.getenv('HTTP_PASS')
+# app.config['HTTP_USER'] = os.getenv('HTTP_USER')
+# app.config['HTTP_PASS'] = os.getenv('HTTP_PASS')
 
-# app.config['HOST'] = "localhost"
-# app.config['DBNAME'] = "watches"
-# app.config['USER'] = "watches"
-# app.config['PASS'] = "watches"
-# app.config['HTTP_USER'] = "cloud"
-# app.config['HTTP_PASS'] = "computing"
+app.config['HOST'] = "localhost"
+app.config['DBNAME'] = "watches"
+app.config['USER'] = "watches"
+app.config['PASS'] = "watches"
+app.config['HTTP_USER'] = "cloud"
+app.config['HTTP_PASS'] = "computing"
 
 
 # Connection to MySQL data base
