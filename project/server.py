@@ -6,21 +6,21 @@ import os
 
 app = Flask(__name__)
 
-# app.config['HOST'] = os.getenv('DB_HOST')
-# app.config['PORT'] = os.getenv('DB_PORT')
-# app.config['DBNAME'] = os.getenv('DB_DBNAME')
-# app.config['USER'] = os.getenv('DB_USER')
-# app.config['PASS'] = os.getenv('DB_PASS')
+app.config['HOST'] = os.getenv('DB_HOST')
+app.config['PORT'] = os.getenv('DB_PORT')
+app.config['DBNAME'] = os.getenv('DB_DBNAME')
+app.config['USER'] = os.getenv('DB_USER')
+app.config['PASS'] = os.getenv('DB_PASS')
 
-# app.config['HTTP_USER'] = os.getenv('HTTP_USER')
-# app.config['HTTP_PASS'] = os.getenv('HTTP_PASS')
+app.config['HTTP_USER'] = os.getenv('HTTP_USER')
+app.config['HTTP_PASS'] = os.getenv('HTTP_PASS')
 
-app.config['HOST'] = "localhost"
-app.config['DBNAME'] = "watches"
-app.config['USER'] = "watches"
-app.config['PASS'] = "watches"
-app.config['HTTP_USER'] = "cloud"
-app.config['HTTP_PASS'] = "computing"
+# app.config['HOST'] = "localhost"
+# app.config['DBNAME'] = "watches"
+# app.config['USER'] = "watches"
+# app.config['PASS'] = "watches"
+# app.config['HTTP_USER'] = "cloud"
+# app.config['HTTP_PASS'] = "computing"
 
 
 # Connection to MySQL data base
@@ -42,7 +42,8 @@ def authentication(f):
             return make_response("User not verified!", 401, {'WWW-Authenticate': 'Basic realm="Loging Required'})
     return setAuth
 
-
+# HTTP Routes handlers
+# POST: /watch
 @app.route('/info/v1/watch', methods=['POST'])
 @authentication
 def create():
@@ -80,7 +81,7 @@ def create():
         connection.close()
     return jsonify(result)
 
-
+# GET, PUT, DELETE: /watch/{sku}
 @app.route('/info/v1/watch/<sku>', methods=['GET', 'DELETE', 'PUT'])
 @authentication
 def skuOperations(sku):
@@ -133,6 +134,23 @@ def skuOperations(sku):
                 else:
                     result = {
                         "message": "Register {} was not found in database".format(sku)}
+    except pymysql.MySQLError as e:
+        result = {"error": str(e)}
+    finally:
+        connection.close()
+    return jsonify(result)
+
+# GET: /watch/complete-sku{prefix}
+@app.route('/info/v1/watch/complete-sku/<prefix>', methods=['GET'])
+@authentication
+def getByPrefix(prefix):
+    connection = dbConnection()
+    try:
+        with connection.cursor() as cursor:
+            # Get data base on sku id by default
+            prefixQuestion = "SELECT * FROM `watches` WHERE `sku` LIKE \'{}\' ".format(prefix+'%')
+            cursor.execute(prefixQuestion)
+            result = cursor.fetchall()
     except pymysql.MySQLError as e:
         result = {"error": str(e)}
     finally:
