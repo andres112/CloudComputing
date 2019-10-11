@@ -18,15 +18,9 @@ app.config['PASS'] = os.getenv('DB_PASS')
 app.config['HTTP_USER'] = os.getenv('HTTP_USER')
 app.config['HTTP_PASS'] = os.getenv('HTTP_PASS')
 
-# app.config['HOST'] = "localhost"
-# app.config['DBNAME'] = "watches"
-# app.config['USER'] = "watches"
-# app.config['PASS'] = "watches"
-# app.config['HTTP_USER'] = "cloud"
-# app.config['HTTP_PASS'] = "computing"
-
-
 # Connection to MySQL data base
+
+
 def dbConnection():
     return pymysql.connect(host=app.config['HOST'],
                            user=app.config['USER'],
@@ -44,7 +38,7 @@ def authentication(f):
         if request.authorization and request.authorization.username == app.config["HTTP_USER"] and request.authorization.password == app.config["HTTP_PASS"]:
             return f(*args, **kwargs)
         else:
-            return make_response("User not verified!", 401, {'WWW-Authenticate': 'Basic realm="Loging Required'})
+            return make_response("User not verified!", 403, {'WWW-Authenticate': 'Basic realm="Loging Required'})
     return setAuth
 
 # Get values of the enum and set datatypes for validations
@@ -72,10 +66,19 @@ def getValuesFromDB():
     finally:
         connection.close()
 
-# Validate if the attribute in body is undefined, null or empty
+    return result
+
+# Validate data before to send data base
 
 
 def validateData(dataname):
+    validData = getValuesFromDB()
+    for item in validData:
+        if item["name"] == dataname:
+            if not str(request.json[dataname]).lower() in item["data"]:
+                return False
+            break
+
     return dataname in request.json and len(str(request.json[dataname])) > 0 and request.json[dataname] != None
 
 # HTTP Routes handlers
@@ -122,7 +125,6 @@ def create():
 @app.route('/info/v1/watch/<sku>', methods=['GET', 'DELETE', 'PUT'])
 @authentication
 def skuOperations(sku):
-    getValuesFromDB()
     connection = dbConnection()
     try:
         with connection.cursor() as cursor:
@@ -205,13 +207,12 @@ def getByPrefix(prefix):
         return make_response(jsonify(result), 400)
     finally:
         connection.close()
-    
+
 
 # GET: /watch/find
 @app.route('/info/v1/watch/find', methods=['GET'])
 @authentication
 def getByParameters():
-    getValuesFromDB()
     connection = dbConnection()
     request_Params = ""
     try:

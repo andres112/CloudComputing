@@ -1,3 +1,4 @@
 Flask
 PyMySQL
 flask-cors
+functools
