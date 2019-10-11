@@ -1,11 +1,14 @@
 from flask import Flask, jsonify, request, make_response
 from functools import wraps
+from flask_cors import CORS
 import pymysql.cursors
 import time
 import os
 
 app = Flask(__name__)
+CORS(app)
 
+# Set up the ENV variables
 # app.config['HOST'] = os.getenv('DB_HOST')
 # app.config['PORT'] = os.getenv('DB_PORT')
 # app.config['DBNAME'] = os.getenv('DB_DBNAME')
@@ -33,6 +36,8 @@ def dbConnection():
                            cursorclass=pymysql.cursors.DictCursor)
 
 # HTTP Basic Authentication function
+
+
 def authentication(f):
     @wraps(f)
     def setAuth(*args, **kwargs):
@@ -41,6 +46,37 @@ def authentication(f):
         else:
             return make_response("User not verified!", 401, {'WWW-Authenticate': 'Basic realm="Loging Required'})
     return setAuth
+
+# Get values of the enum and set datatypes for validations
+
+
+def getValuesFromDB():
+    connection = dbConnection()
+    try:
+        with connection.cursor() as cursor:
+            # Read a single record
+            setValuesQuery = ("select col.column_name as name, trim(leading 'set' from col.column_type) as data "
+                              "from information_schema.columns col "
+                              "where col.data_type in ('set') "
+                              "and col.table_schema=%s")
+            enumValuesQuery = ("select col.column_name as name, trim(leading 'enum' from col.column_type) as data "
+                               "from information_schema.columns col "
+                               "where col.data_type in ('enum') "
+                               "and col.table_schema=%s")
+            cursor.execute(setValuesQuery, (app.config['DBNAME'],))
+            setResult = cursor.fetchall()
+            cursor.execute(enumValuesQuery, (app.config['DBNAME'],))
+            enumResult = cursor.fetchall()
+
+            result = setResult + enumResult
+    finally:
+        connection.close()
+
+# Validate if the attribute in body is undefined, null or empty
+
+
+def validateData(dataname):
+    return dataname in request.json and len(str(request.json[dataname])) > 0 and request.json[dataname] != None
 
 # HTTP Routes handlers
 # POST: /watch
@@ -77,9 +113,10 @@ def create():
                     "message": "Register {} created successfuly".format(watch["sku"])}
     except pymysql.MySQLError as e:
         result = {"error": str(e)}
+        return make_response(jsonify(result), 400)
     finally:
         connection.close()
-    return jsonify(result)
+    return make_response(jsonify(result), 201)
 
 # GET, PUT, DELETE: /watch/{sku}
 @app.route('/info/v1/watch/<sku>', methods=['GET', 'DELETE', 'PUT'])
@@ -136,9 +173,10 @@ def skuOperations(sku):
                         "message": "Register {} was not found in database".format(sku)}
     except pymysql.MySQLError as e:
         result = {"error": str(e)}
+        return make_response(jsonify(result), 400)
     finally:
         connection.close()
-    return jsonify(result)
+    return make_response(jsonify(result), 200)
 
 # GET: /watch/complete-sku{prefix}
 @app.route('/info/v1/watch/complete-sku/<prefix>', methods=['GET'])
@@ -147,42 +185,58 @@ def getByPrefix(prefix):
     connection = dbConnection()
     try:
         with connection.cursor() as cursor:
-            # Get data base on sku id by default
-            prefixQuestion = "SELECT * FROM `watches` WHERE `sku` LIKE \'{}\' ".format(prefix+'%')
+            # Get data base on sku prefix id by default
+            prefixQuestion = "SELECT * FROM `watches` WHERE `sku` LIKE \'{}\' ".format(
+                prefix+'%')
             cursor.execute(prefixQuestion)
             result = cursor.fetchall()
     except pymysql.MySQLError as e:
         result = {"error": str(e)}
+        return make_response(jsonify(result), 400)
     finally:
         connection.close()
-    return jsonify(result)
+    return make_response(jsonify(result), 200)
 
-# Get values of the enum and set datatypes for validations
-def getValuesFromDB():
+# GET: /watch/find
+@app.route('/info/v1/watch/find', methods=['GET'])
+@authentication
+def getByParameters():
+    getValuesFromDB()
     connection = dbConnection()
+    request_Params = ""
     try:
         with connection.cursor() as cursor:
-            # Read a single record
-            setValuesQuery = ("select col.column_name as name, trim(leading 'set' from col.column_type) as data "
-                              "from information_schema.columns col "
-                              "where col.data_type in ('set') "
-                              "and col.table_schema=%s")
-            enumValuesQuery = ("select col.column_name as name, trim(leading 'enum' from col.column_type) as data "
-                               "from information_schema.columns col "
-                               "where col.data_type in ('enum') "
-                               "and col.table_schema=%s")
-            cursor.execute(setValuesQuery, (app.config['DBNAME'],))
-            setResult = cursor.fetchall()
-            cursor.execute(enumValuesQuery, (app.config['DBNAME'],))
-            enumResult = cursor.fetchall()
 
-            result = setResult + enumResult
+            sku = request.args.get('sku')
+            watch_type = request.args.get('type')
+            status = request.args.get('status')
+            gender = request.args.get('gender')
+            year = request.args.get('year')
+
+            parameters = {"sku": sku, "type": watch_type,
+                          "status": status, "gender": gender, "year": year}
+            for key, value in parameters.items():
+                if value != None:
+                    if len(request_Params) > 0:
+                        request_Params = request_Params+ " AND"
+                    if key == "sku":
+                        request_Params = request_Params + \
+                            ' {} LIKE \'{}\''.format(key, value+'%')
+                    else:
+                        request_Params = request_Params + \
+                            ' {} = \'{}\''.format(key, value)
+
+            prefixQuestion = "SELECT * FROM `watches` WHERE {}".format(
+                request_Params)
+            cursor.execute(prefixQuestion)
+            result = cursor.fetchall()
+    except pymysql.MySQLError as e:
+        result = {"error": str(e)}
+        return make_response(jsonify(result), 400)
     finally:
         connection.close()
+    return make_response(jsonify(result), 200)
 
-# Validate if the attribute in body is undefined, null or empty
-def validateData(dataname):
-    return dataname in request.json and len(request.json[dataname]) > 0
 
 if __name__ == "__main__":
     app.run(port=1080)
