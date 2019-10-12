@@ -18,9 +18,15 @@ app.config['PASS'] = os.getenv('DB_PASS')
 app.config['HTTP_USER'] = os.getenv('HTTP_USER')
 app.config['HTTP_PASS'] = os.getenv('HTTP_PASS')
 
+# app.config['HOST'] = "localhost"
+# app.config['DBNAME'] = "watches"
+# app.config['USER'] = "watches"
+# app.config['PASS'] = "watches"
+# app.config['HTTP_USER'] = "cloud"
+# app.config['HTTP_PASS'] = "computing"
+
+
 # Connection to MySQL data base
-
-
 def dbConnection():
     return pymysql.connect(host=app.config['HOST'],
                            user=app.config['USER'],
@@ -35,10 +41,11 @@ def dbConnection():
 def authentication(f):
     @wraps(f)
     def setAuth(*args, **kwargs):
-        if request.authorization and request.authorization.username == app.config["HTTP_USER"] and request.authorization.password == app.config["HTTP_PASS"]:
+        auth = request.authorization
+        if auth and auth.username == "user" and auth.password == app.config["HTTP_PASS"]:
             return f(*args, **kwargs)
-        else:
-            return make_response("User not verified!", 403, {'WWW-Authenticate': 'Basic realm="Loging Required'})
+
+        return make_response("User not verified!", 401, {'WWW-Authenticate': 'Basic realm="Loging Required'})
     return setAuth
 
 # Get values of the enum and set datatypes for validations
@@ -171,7 +178,7 @@ def skuOperations(sku):
 
             else:
                 result = {
-                    "error": "Thera are not registers for {}".format(sku)}
+                    "error": "There are not registers for {}".format(sku)}
                 return make_response(jsonify(result), 404)
 
     except pymysql.MySQLError as e:
