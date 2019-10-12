@@ -9,21 +9,21 @@ app = Flask(__name__)
 CORS(app)
 
 # Set up the ENV variables
-app.config['HOST'] = os.getenv('DB_HOST')
-app.config['PORT'] = os.getenv('DB_PORT')
-app.config['DBNAME'] = os.getenv('DB_DBNAME')
-app.config['USER'] = os.getenv('DB_USER')
-app.config['PASS'] = os.getenv('DB_PASS')
+# app.config['HOST'] = os.getenv('DB_HOST')
+# app.config['PORT'] = os.getenv('DB_PORT')
+# app.config['DBNAME'] = os.getenv('DB_DBNAME')
+# app.config['USER'] = os.getenv('DB_USER')
+# app.config['PASS'] = os.getenv('DB_PASS')
 
-app.config['HTTP_USER'] = os.getenv('HTTP_USER')
-app.config['HTTP_PASS'] = os.getenv('HTTP_PASS')
+# app.config['HTTP_USER'] = os.getenv('HTTP_USER')
+# app.config['HTTP_PASS'] = os.getenv('HTTP_PASS')
 
-# app.config['HOST'] = "localhost"
-# app.config['DBNAME'] = "watches"
-# app.config['USER'] = "watches"
-# app.config['PASS'] = "watches"
-# app.config['HTTP_USER'] = "cloud"
-# app.config['HTTP_PASS'] = "computing"
+app.config['HOST'] = "localhost"
+app.config['DBNAME'] = "watches"
+app.config['USER'] = "watches"
+app.config['PASS'] = "watches"
+app.config['HTTP_USER'] = "cloud"
+app.config['HTTP_PASS'] = "computing"
 
 
 # Connection to MySQL data base
@@ -35,6 +35,44 @@ def dbConnection():
                            charset='utf8mb4',
                            cursorclass=pymysql.cursors.DictCursor)
 
+# Create index in db
+def createIndex(indexName, tableName, attribute):
+    connection = dbConnection()
+    try:
+        with connection.cursor() as cursor:
+            # First validate if index already exist
+            current_index = "SHOW INDEX FROM {}".format(tableName)
+            cursor.execute(current_index)
+            result = cursor.fetchall()
+
+            exist = list(filter(lambda x : x['Key_name'] == indexName, result))
+
+            if not exist:
+                index = "CREATE INDEX {} ON {} ({})".format(
+                    indexName, tableName, attribute)
+                cursor.execute(index)
+
+    except pymysql.MySQLError as e:
+        result = {"error": str(e)}
+        return make_response(jsonify(result), 400)
+    finally:
+        connection.close()
+
+# Drop index in db
+def dropIndex(indexName, tableName):
+    connection = dbConnection()
+    try:
+        with connection.cursor() as cursor: 
+            index = "DROP INDEX {} ON {}".format(
+                indexName, tableName)
+            cursor.execute(index)
+
+    except pymysql.MySQLError as e:
+        result = {"error": str(e)}
+        return make_response(jsonify(result), 400)
+    finally:
+        connection.close()
+
 # HTTP Basic Authentication function
 
 
@@ -42,7 +80,7 @@ def authentication(f):
     @wraps(f)
     def setAuth(*args, **kwargs):
         auth = request.authorization
-        if auth and auth.username == "user" and auth.password == app.config["HTTP_PASS"]:
+        if auth and auth.username == app.config['HTTP_USER'] and auth.password == app.config["HTTP_PASS"]:
             return f(*args, **kwargs)
 
         return make_response("User not verified!", 401, {'WWW-Authenticate': 'Basic realm="Loging Required'})
@@ -120,7 +158,7 @@ def create():
                                      watch["case_form"], watch["bracelet_material"], watch["movement"],))
                 connection.commit()
                 result = {
-                    "message": "Register {} created successfuly".format(watch["sku"])}
+                    "message": "Register {} created successfully".format(watch["sku"])}
     except pymysql.MySQLError as e:
         result = {"error": str(e)}
         return make_response(jsonify(result), 400)
@@ -132,6 +170,7 @@ def create():
 @app.route('/info/v1/watch/<sku>', methods=['GET', 'DELETE', 'PUT'])
 @authentication
 def skuOperations(sku):
+    createIndex("sku_index", "watches", "sku")
     connection = dbConnection()
     try:
         with connection.cursor() as cursor:
@@ -164,7 +203,7 @@ def skuOperations(sku):
                                          watch["case_form"], watch["bracelet_material"], watch["movement"], sku,))
                     connection.commit()
                     result = {
-                        "message": "Register {} updated successfuly".format(sku)}
+                        "message": "Register {} updated successfully".format(sku)}
 
                 # Delete operation rely on the sku id
                 if request.method == "DELETE":
@@ -172,7 +211,7 @@ def skuOperations(sku):
                     cursor.execute(sql, (sku,))
                     connection.commit()
                     result = {
-                        "message": "Register {} deleted successfuly".format(sku)}
+                        "message": "Register {} deleted successfully".format(sku)}
 
                 return make_response(jsonify(result), 200)
 
@@ -192,6 +231,7 @@ def skuOperations(sku):
 @app.route('/info/v1/watch/complete-sku/<prefix>', methods=['GET'])
 @authentication
 def getByPrefix(prefix):
+    createIndex("skuPrefix_index", "watches", "sku(3)")
     connection = dbConnection()
     try:
         with connection.cursor() as cursor:
@@ -219,9 +259,10 @@ def getByPrefix(prefix):
 # GET: /watch/find
 @app.route('/info/v1/watch/find', methods=['GET'])
 @authentication
-def getByParameters():
+def getByParameters():    
     connection = dbConnection()
     request_Params = ""
+    indexAttributes = ""
     try:
         with connection.cursor() as cursor:
             # get data from URL sring params
@@ -238,12 +279,17 @@ def getByParameters():
                 if value != None:
                     if len(request_Params) > 0:
                         request_Params = request_Params + " AND"
+                        indexAttributes = indexAttributes + ", "
                     if key == "sku":
                         request_Params = request_Params + \
                             ' {} LIKE \'{}\''.format(key, value+'%')
                     else:
                         request_Params = request_Params + \
                             ' {} = \'{}\''.format(key, value)
+                        indexAttributes = indexAttributes+ '{}'.format(key)
+
+            # Create index according to the params in URL
+            createIndex("{}_index".format(indexAttributes.replace(", ", "_")), "watches", indexAttributes)
 
             # SQL question, It only include the params different of None
             prefixQuestion = "SELECT * FROM `watches` WHERE {}".format(
