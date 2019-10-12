@@ -1,3 +1,5 @@
 # Ignore the next files and folders
 *.env
+*.yaml
+*.sql
 __pycache__
