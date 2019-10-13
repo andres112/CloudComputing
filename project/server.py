@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request, make_response
 from functools import wraps
 from flask_cors import CORS
+from dotenv import load_dotenv
 import pymysql.cursors
 import time
 import os
@@ -8,23 +9,27 @@ import os
 app = Flask(__name__)
 CORS(app)
 
+APP_ROOT = os.path.join(os.path.dirname(__file__), '..') 
+dotenv_path = os.path.join(APP_ROOT, '.env')
+load_dotenv(dotenv_path)
+
 # Set up the ENV variables
-# app.config['HOST'] = os.getenv('DB_HOST')
-# app.config['PORT'] = os.getenv('DB_PORT')
-# app.config['DBNAME'] = os.getenv('DB_DBNAME')
-# app.config['USER'] = os.getenv('DB_USER')
-# app.config['PASS'] = os.getenv('DB_PASS')
+app.config['HOST'] = os.getenv('DB_HOST')
+app.config['PORT'] = os.getenv('DB_PORT')
+app.config['DBNAME'] = os.getenv('DB_DBNAME')
+app.config['USER'] = os.getenv('DB_USER')
+app.config['PASS'] = os.getenv('DB_PASS')
 
-# app.config['HTTP_USER'] = os.getenv('HTTP_USER')
-# app.config['HTTP_PASS'] = os.getenv('HTTP_PASS')
+app.config['HTTP_USER'] = os.getenv('HTTP_USER')
+app.config['HTTP_PASS'] = os.getenv('HTTP_PASS')
 
-app.config['HOST'] = "localhost"
-app.config['DBNAME'] = "watches"
-app.config['USER'] = "watches"
-app.config['PASS'] = "watches"
-app.config['HTTP_USER'] = "cloud"
-app.config['HTTP_PASS'] = "computing"
 
+# app.config['HOST'] = "localhost"
+# app.config['DBNAME'] = "watches"
+# app.config['USER'] = "watches"
+# app.config['PASS'] = "watches"
+# app.config['HTTP_USER'] = "cloud"
+# app.config['HTTP_PASS'] = "computing"
 
 # Connection to MySQL data base
 def dbConnection():
@@ -313,4 +318,4 @@ def getByParameters():
 
 
 if __name__ == "__main__":
-    app.run(port=1080)
+    app.run(port=1080, debug=True)

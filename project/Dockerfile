@@ -22,6 +22,4 @@ COPY . /usr/src/app
 
 EXPOSE 1080
 
-ENTRYPOINT ["python3"]
-
 CMD ["python", "server.py"]
