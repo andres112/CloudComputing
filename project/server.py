@@ -23,14 +23,6 @@ app.config['PASS'] = os.getenv('DB_PASS')
 app.config['HTTP_USER'] = os.getenv('HTTP_USER')
 app.config['HTTP_PASS'] = os.getenv('HTTP_PASS')
 
-
-# app.config['HOST'] = "localhost"
-# app.config['DBNAME'] = "watches"
-# app.config['USER'] = "watches"
-# app.config['PASS'] = "watches"
-# app.config['HTTP_USER'] = "cloud"
-# app.config['HTTP_PASS'] = "computing"
-
 # Connection to MySQL data base
 def dbConnection():
     return pymysql.connect(host=app.config['HOST'],
