@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:5.7
+    environment: 
+      MYSQL_ROOT_PASSWORD: secret
+    networks:
+      - my-net
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - db
+    environment: 
+      -PMA_HOST: db
+    ports:
+      - "2090:80"
+    networks:
+      - my-net
+networks:
+  my-net:
+    driver: bridge

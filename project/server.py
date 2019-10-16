@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, make_response
 from functools import wraps
 from flask_cors import CORS
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 import pymysql.cursors
 import time
 import os
@@ -9,9 +9,9 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-APP_ROOT = os.path.join(os.path.dirname(__file__), '..') 
-dotenv_path = os.path.join(APP_ROOT, '.env')
-load_dotenv(dotenv_path)
+# APP_ROOT = os.path.join(os.path.dirname(__file__), '..') 
+# dotenv_path = os.path.join(APP_ROOT, '.env')
+# load_dotenv(dotenv_path)
 
 # Set up the ENV variables
 app.config['HOST'] = os.getenv('DB_HOST')
