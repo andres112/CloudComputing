@@ -5,18 +5,36 @@ services:
     image: mysql:5.7
     environment: 
       MYSQL_ROOT_PASSWORD: secret
+      MYSQL_USER: watches
+      MYSQL_PASSWORD: watches
+      MYSQL_DATABASE: watches
+    ports:
+      - "3306:3306"
     networks:
       - my-net
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     depends_on:
       - db
+    restart: always
     environment: 
       -PMA_HOST: db
     ports:
-      - "2090:80"
+      - "2080:80"
     networks:
       - my-net
+  watches:
+    # image: watches
+    build: .
+    depends_on:
+      - db
+    restart: always
+    environment:
+      DB_HOST: db
+    ports:
+      - "1080:1080"
 networks:
   my-net:
     driver: bridge
