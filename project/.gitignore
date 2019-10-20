@@ -1,3 +1,4 @@
 # Ignore the next files and folders
 *.env
 __pycache__
+*.pyc
