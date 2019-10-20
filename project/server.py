@@ -14,6 +14,7 @@ CORS(app)
 # load_dotenv(dotenv_path)
 
 # Set up the ENV variables
+
 app.config['HOST'] = os.getenv('DB_HOST')
 app.config['PORT'] = os.getenv('DB_PORT')
 app.config['DBNAME'] = os.getenv('DB_DBNAME')
@@ -22,6 +23,8 @@ app.config['PASS'] = os.getenv('DB_PASS')
 
 app.config['HTTP_USER'] = os.getenv('HTTP_USER')
 app.config['HTTP_PASS'] = os.getenv('HTTP_PASS')
+
+print(app.config)
 
 # Connection to MySQL data base
 def dbConnection():
@@ -311,3 +314,4 @@ def getByParameters():
 
 if __name__ == "__main__":
     app.run(port=1080, debug=True)
+

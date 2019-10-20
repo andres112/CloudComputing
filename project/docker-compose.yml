@@ -26,8 +26,7 @@ services:
     networks:
       - my-net
   watches:
-    # image: watches
-    build: .
+    image: watches
     depends_on:
       - db
     restart: always
