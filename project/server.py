@@ -139,7 +139,7 @@ def create():
                     'sku': request.json["sku"] if validateData("sku") else None,
                     'type': request.json["type"] if validateData("type") else "watch",
                     'status': request.json["status"] if validateData("status") else "current",
-                    'gender': request.json["gender"] if validateData("gender") else "None",
+                    'gender': request.json["gender"] if validateData("gender") else None,
                     'year': request.json["year"] if validateData("year") else "0",
                     'dial_material': request.json["dial_material"] if validateData("dial_material") else "",
                     'dial_color': request.json["dial_color"] if validateData("dial_color") else "",

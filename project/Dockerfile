@@ -23,4 +23,3 @@ COPY . /usr/src/app
 EXPOSE 1080
 
 CMD ["python", "server.py"]
-
