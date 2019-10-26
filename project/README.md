@@ -23,8 +23,8 @@ The web service has the following routes, where through HTTP request the service
 * The user authentication is possible with **HTTP Basic Auth**
 * All the ENV variables were created and configurated.
 * The service composed contains the following images: MySQL image version 5.7, PHPMyAdmin and the watches web service
-* The optional goal about the DataBase indexing was successful implemented
-* The optional goal about the HTTP expiration data is pending
+* The optional goal about the DataBase indexing was successfully implemented
+* The optional goal about the HTTP expiration with Cache_Control: max-age=3600 was successfully implemented
 
 
 ### Test
