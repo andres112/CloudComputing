@@ -1,7 +1,6 @@
 from flask import Flask, jsonify, request, make_response
 from functools import wraps
 from flask_cors import CORS
-# from dotenv import load_dotenv
 import pymysql.cursors
 import time
 import os
@@ -9,9 +8,6 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-# APP_ROOT = os.path.join(os.path.dirname(__file__), '..') 
-# dotenv_path = os.path.join(APP_ROOT, '.env')
-# load_dotenv(dotenv_path)
 
 # Set up the ENV variables
 
@@ -24,7 +20,6 @@ app.config['PASS'] = os.getenv('DB_PASS')
 app.config['HTTP_USER'] = os.getenv('HTTP_USER')
 app.config['HTTP_PASS'] = os.getenv('HTTP_PASS')
 
-print(app.config)
 
 # Connection to MySQL data base
 def dbConnection():
@@ -36,6 +31,8 @@ def dbConnection():
                            cursorclass=pymysql.cursors.DictCursor)
 
 # Create index in db
+
+
 def createIndex(indexName, tableName, attribute):
     connection = dbConnection()
     try:
@@ -45,7 +42,7 @@ def createIndex(indexName, tableName, attribute):
             cursor.execute(current_index)
             result = cursor.fetchall()
 
-            exist = list(filter(lambda x : x['Key_name'] == indexName, result))
+            exist = list(filter(lambda x: x['Key_name'] == indexName, result))
 
             if not exist:
                 index = "CREATE INDEX {} ON {} ({})".format(
@@ -59,10 +56,12 @@ def createIndex(indexName, tableName, attribute):
         connection.close()
 
 # Drop index in db
+
+
 def dropIndex(indexName, tableName):
     connection = dbConnection()
     try:
-        with connection.cursor() as cursor: 
+        with connection.cursor() as cursor:
             index = "DROP INDEX {} ON {}".format(
                 indexName, tableName)
             cursor.execute(index)
@@ -164,7 +163,10 @@ def create():
         return make_response(jsonify(result), 400)
     finally:
         connection.close()
-    return make_response(jsonify(result), 200)
+    response = make_response(jsonify(result), 200)
+    response.headers['Cache-Control'] = 'max-age=3600'
+    print(response)
+    return response
 
 # GET, PUT, DELETE: /watch/{sku}
 @app.route('/info/v1/watch/<sku>', methods=['GET', 'DELETE', 'PUT'])
@@ -213,7 +215,10 @@ def skuOperations(sku):
                     result = {
                         "message": "Register {} deleted successfully".format(sku)}
 
-                return make_response(jsonify(result), 200)
+                response = make_response(jsonify(result), 200)
+                response.headers['Cache-Control'] = 'max-age=3600'
+                print(response)
+                return response
 
             else:
                 result = {
@@ -243,7 +248,10 @@ def getByPrefix(prefix):
 
             # Response validation
             if result:
-                return make_response(jsonify(result), 200)
+                response = make_response(jsonify(result), 200)
+                response.headers['Cache-Control'] = 'max-age=3600'
+                print(response)
+                return response
             else:
                 result = {
                     "error": "There are not registers for {} ".format(prefix)}
@@ -259,7 +267,7 @@ def getByPrefix(prefix):
 # GET: /watch/find
 @app.route('/info/v1/watch/find', methods=['GET'])
 @authentication
-def getByParameters():    
+def getByParameters():
     connection = dbConnection()
     request_Params = ""
     indexAttributes = ""
@@ -286,10 +294,11 @@ def getByParameters():
                     else:
                         request_Params = request_Params + \
                             ' {} = \'{}\''.format(key, value)
-                        indexAttributes = indexAttributes+ '{}'.format(key)
+                        indexAttributes = indexAttributes + '{}'.format(key)
 
             # Create index according to the params in URL
-            createIndex("{}_index".format(indexAttributes.replace(", ", "_")), "watches", indexAttributes)
+            createIndex("{}_index".format(indexAttributes.replace(
+                ", ", "_")), "watches", indexAttributes)
 
             # SQL question, It only include the params different of None
             prefixQuestion = "SELECT * FROM `watches` WHERE {}".format(
@@ -299,7 +308,10 @@ def getByParameters():
 
             # Response validation
             if result:
-                return make_response(jsonify(result), 200)
+                response = make_response(jsonify(result), 200)
+                response.headers['Cache-Control'] = 'max-age=3600'
+                print(response)
+                return response
             else:
                 result = {
                     "error": "There are not registers according to the options"}
@@ -314,4 +326,3 @@ def getByParameters():
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=1080, debug=True)
-
