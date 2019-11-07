@@ -10,7 +10,7 @@ CORS(app)
 
 @app.route('/image/v1/watch/<sku>', methods=['GET'])
 def get_image(sku):
-    response = requests.get("https://s3-eu-west-1.amazonaws.com/cloudcomputing-2018/project1/images/{}.png".format(sku)) 
+    response = requests.get("https://s3-eu-west-1.amazonaws.com/cloudcomputing-2018/project1/images/{}.png".format(sku))
     # pdb.set_trace()
     expiry_time = datetime.datetime.utcnow() + datetime.timedelta(seconds=3600)    
     
