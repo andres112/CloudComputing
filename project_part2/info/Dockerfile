@@ -8,11 +8,11 @@ COPY requirements.txt /usr/src/app/
 
 ENV FLASK_APP=server.py
 ENV FLASK_RUN_PORT=1080
-ENV HOST=104.155.90.12
-ENV PORT=3306
-ENV DBNAME=watches
-ENV USER=watches
-ENV PASS=watches
+ENV DB_HOST=104.155.90.12
+ENV DB_PORT=3306
+ENV DB_DBNAME=watches
+ENV DB_USER=watches
+ENV DB_PASS=watches
 ENV HTTP_USER=cloud
 ENV HTTP_PASS=computing
 

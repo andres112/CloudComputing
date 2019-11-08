@@ -2,7 +2,7 @@ from flask import Flask, render_template, make_response, url_for
 from flask_cors import CORS
 import requests 
 import datetime
-# import pdb
+import pdb
 
 app = Flask(__name__, static_folder="static")
 CORS(app)
@@ -10,19 +10,22 @@ CORS(app)
 
 @app.route('/image/v1/watch/<sku>', methods=['GET'])
 def get_image(sku):
-    response = requests.get("https://s3-eu-west-1.amazonaws.com/cloudcomputing-2018/project1/images/{}.png".format(sku))
+    url = "https://s3-eu-west-1.amazonaws.com/cloudcomputing-2018/project1/images/{}.png".format(sku)
+    response = None
+    head_response = requests.head(url)
+
+    print(head_response.headers)
+    res = requests.get(url)
     # pdb.set_trace()
-    expiry_time = datetime.datetime.utcnow() + datetime.timedelta(seconds=3600)    
-    
-    if(response.status_code != 200):
-        response = make_response(render_template("notfound.html"), response.status_code )
+    if(res.status_code != 200 and res.status_code != 304):
+        response = make_response(render_template("notfound.html"), res.status_code )
     else:
-        response = make_response(render_template("index.html", value=sku), response.status_code)
+        expiry_time = datetime.datetime.utcnow() + datetime.timedelta(seconds=3600)  
+        response = make_response(render_template("index.html", value=sku), res.status_code)
         response.headers["Expires"] = expiry_time.strftime("%a, %d %b %Y %H:%M:%S GMT")
         response.headers['Cache-Control'] = 'max-age=3600'
-        response.add_etag()
+        response.add_etag(head_response.headers["ETag"])
 
-    # Return response 
     return response
 
 

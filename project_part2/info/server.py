@@ -20,7 +20,6 @@ app.config['PASS'] = os.getenv('DB_PASS')
 app.config['HTTP_USER'] = os.getenv('HTTP_USER')
 app.config['HTTP_PASS'] = os.getenv('HTTP_PASS')
 
-
 # Connection to MySQL data base
 def dbConnection():
     return pymysql.connect(host=app.config['HOST'],
