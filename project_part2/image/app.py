@@ -1,4 +1,4 @@
-from flask import Flask, render_template, make_response, url_for
+from flask import Flask, render_template, make_response, url_for, redirect
 from flask_cors import CORS
 import requests 
 import datetime
@@ -7,6 +7,18 @@ import pdb
 app = Flask(__name__, static_folder="static")
 CORS(app)
 
+@app.errorhandler(404)
+def page_not_found(error):
+    return redirect('/image/v1/')
+
+@app.route('/')
+def default():
+    return redirect('/image/v1/')
+
+@app.route('/image/v1/')
+def hello():
+    response = make_response(render_template("notfound.html"), 200 )
+    return response
 
 @app.route('/image/v1/watch/<sku>', methods=['GET'])
 def get_image(sku):

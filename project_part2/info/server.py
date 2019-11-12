@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, make_response, render_template
+from flask import Flask, jsonify, request, make_response, render_template, redirect
 from functools import wraps
 from flask_cors import CORS
 import pymysql.cursors
@@ -127,11 +127,16 @@ def validateData(dataname):
 # Handle 404 routes
 @app.errorhandler(404)
 def page_not_found(error):
-    return render_template("notfound.html"), 404
+    return redirect('/info/v1/')
+
+@app.route('/')
+def default():
+    return redirect('/info/v1/')
 
 @app.route('/info/v1/')
 def hello():
-    return render_template("notfound.html"), 200
+    response = make_response(render_template("notfound.html"), 200 )
+    return response
 
 # HTTP Routes handlers
 # POST: /watch
