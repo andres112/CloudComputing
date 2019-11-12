@@ -1,22 +1,22 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: watches-image
+  name: watch-image
   namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: watches-image
+      run: watch-image
   template:
     metadata:
       labels:
-        run: watches-image
+        run: watch-image
     spec:
       containers:
-      - image: docker.io/andres112/watches-image:latest
+      - image: docker.io/andres112/watch-image:latest
         imagePullPolicy: IfNotPresent
-        name: watches-image
+        name: watch-image
         ports:
         - containerPort: 1080
           protocol: TCP
@@ -24,22 +24,22 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: watches-info
+  name: watch-info
   namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: watches-info
+      run: watch-info
   template:
     metadata:
       labels:
-        run: watches-info
+        run: watch-info
     spec:
       containers:
-      - image: docker.io/andres112/watches-info:latest
+      - image: docker.io/andres112/watch-info:latest
         imagePullPolicy: IfNotPresent
-        name: watches-info
+        name: watch-info
         ports:
         - containerPort: 1080
           protocol: TCP
@@ -47,7 +47,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: watches-image
+  name: watch-image
   namespace: default
 spec:  
   ports:
@@ -55,13 +55,13 @@ spec:
       protocol: TCP
       targetPort: 1080
   selector:
-    run: watches-image
+    run: watch-image
   type: LoadBalancer
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: watches-info
+  name: watch-info
   namespace: default
 spec:  
   ports:
@@ -69,13 +69,13 @@ spec:
       protocol: TCP
       targetPort: 1080
   selector:
-    run: watches-info
+    run: watch-info
   type: LoadBalancer
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: watches-ingress
+  name: watch-ingress
   namespace: default
 spec:
   rules:
@@ -83,9 +83,9 @@ spec:
       paths:
       - path: /image/v1/*
         backend:
-          serviceName: watches-image
+          serviceName: watch-image
           servicePort: 1080
       - path: /info/v1/*
         backend:
-          serviceName: watches-info
+          serviceName: watch-info
           servicePort: 1080

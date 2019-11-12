@@ -1,4 +1,4 @@
-from flask import Flask, render_template, make_response, url_for, redirect
+from flask import Flask, render_template, make_response, url_for, jsonify
 from flask_cors import CORS
 import requests 
 import datetime
@@ -7,26 +7,22 @@ import pdb
 app = Flask(__name__, static_folder="static")
 CORS(app)
 
-@app.errorhandler(404)
-def page_not_found(error):
-    return redirect('/image/v1/')
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def default():
-    return redirect('/image/v1/')
+    result = {"message": "No message"}
+    return make_response(jsonify(result), 200)
 
-@app.route('/image/v1/')
+@app.route('/image/v1/', methods=['GET'])
 def hello():
-    response = make_response(render_template("notfound.html"), 200 )
-    return response
+    result = {"message": "No message"}
+    return make_response(jsonify(result), 200)
 
 @app.route('/image/v1/watch/<sku>', methods=['GET'])
 def get_image(sku):
     url = "https://s3-eu-west-1.amazonaws.com/cloudcomputing-2018/project1/images/{}.png".format(sku)
     response = None
     head_response = requests.head(url)
-
-    print(head_response.headers)
     res = requests.get(url)
     # pdb.set_trace()
     if(res.status_code != 200 and res.status_code != 304):
