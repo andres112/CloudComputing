@@ -1,0 +1,39 @@
+openapi: 3.0.0
+info:
+  title: Watch image service
+  version: '1.0'
+servers:
+  - url: 'http://localhost/image/v1'
+  - url: 'http://localhost:1080/image/v1'
+paths:
+  '/watch/{sku}':
+    get:
+      summary: Return watch image
+      parameters:
+        - name: sku
+          in: path
+          description: SKU of the watch to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+          headers:
+            Expires:
+              schema:
+                type: string
+                format: date-time
+            Cache-control:
+              schema:
+                type: string
+            ETag:
+              schema:
+                type: string
+        '404':
+          description: Image not found
