@@ -5,6 +5,7 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 COPY requirements.txt /usr/src/app/
+COPY /templates /usr/src/app/templates
 
 ENV FLASK_APP=server.py
 ENV FLASK_RUN_PORT=1080

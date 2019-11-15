@@ -1,10 +1,15 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: watch-image
   namespace: default
 spec:
-  replicas: 1
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 25%
   selector:
     matchLabels:
       run: watch-image
@@ -15,19 +20,24 @@ spec:
     spec:
       containers:
       - image: docker.io/andres112/watch-image:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         name: watch-image
         ports:
         - containerPort: 1080
           protocol: TCP
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: watch-info
   namespace: default
 spec:
-  replicas: 1
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 25%
   selector:
     matchLabels:
       run: watch-info
@@ -38,7 +48,7 @@ spec:
     spec:
       containers:
       - image: docker.io/andres112/watch-info:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         name: watch-info
         ports:
         - containerPort: 1080

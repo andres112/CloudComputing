@@ -31,4 +31,3 @@ The web service has the following routes, where through HTTP request the service
 Before to the Docker part, the web service was tested in the in the swagger environment, this test was possible thanks to the _info_openapi_v1.yaml_ given by the Lecture professor. The test got successful result.
 
 [Test Link](https://editor.swagger.io/) (It is required to import the _info_openapi_v1.yaml_ file)
-

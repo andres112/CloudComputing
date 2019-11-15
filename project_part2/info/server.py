@@ -124,15 +124,15 @@ def validateData(dataname):
 
     return dataname in request.json and len(str(request.json[dataname])) > 0 and request.json[dataname] != None
 
-# Handle 404 routes
+# Handle / route
 @app.route('/', methods=['GET'])
 def default():
-    result = {"message": "No message"}
+    result = {"message": "Page not found"}
     return make_response(jsonify(result), 200)
 
 @app.route('/info/v1/', methods=['GET'])
 def no_route():
-    result = {"message": "No message"}
+    result = {"message": "Page not found"}
     return make_response(jsonify(result), 200)
 
 # HTTP Routes handlers
