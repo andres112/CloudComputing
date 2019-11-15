@@ -36,9 +36,9 @@ The web service has the following routes, where through HTTP request the service
 
 ### Google Cloud implementation
 #### Ingress
-* **Image Service**
-http://34.102.204.116/info/v1/watch/CAC1111.BA0850
 * **Info Service**
+http://34.102.204.116/info/v1/watch/CAC1111.BA0850
+* **Image Service**
 http://34.102.204.116/image/v1/watch/CAC1111.BA0850
 
 
