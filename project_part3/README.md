@@ -3,12 +3,13 @@
 ### PART 3
 ### Deliverables
 This project contains the following cmponents:
-* **app.py** The web service code in python
+* **server.py** The web service code in python
 * **run.sh** Script to run the web service 
-* **initialize_dynamodb** Script to run the creation and loading table in dynamoDB
+* **initialize_dynamodb.sh** Script to run the creation and loading table in dynamoDB
 * **/db** Folder that contains the **watches.json** database. This database was build with the tool [csvjson](https://www.csvjson.com/sql2json) 
 and **loadDB.py** the python script to load the table 
 * **info_openapi_v2.yaml** Description file for swagger
+* **create_lambdas.sh** Script to generate a folder with virtual environment to install, to init and deploy [zappa](https://github.com/Miserlou/Zappa)
 
 ### Features and objectives reached
 The web service has the following routes, where through HTTP request the service response:
