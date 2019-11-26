@@ -21,9 +21,11 @@ def get_watch(sku):
 
 def put_watch():
     sku = request.json.get('sku')
-
     if not sku:
         return {'error': 'Please provide a sku'}
+    
+    if get_watch(sku):
+        return {'error': 'Register for sku {} is already created'.format(sku)}        
 
     try:
         kind = request.json.get('type') if request.json.get('type') else "WATCH"
