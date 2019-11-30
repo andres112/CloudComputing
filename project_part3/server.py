@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, make_response
 from flask_cors import CORS
+from functools import wraps
 import boto3
 
 import app_controller
@@ -15,9 +16,21 @@ TABLE_NAME = 'watches'
 
 dynamo_client = boto3.client('dynamodb')
 
+# HTTP Basic Authentication function
+
+def authentication(f):
+    @wraps(f)
+    def setAuth(*args, **kwargs):
+        auth = request.authorization
+        if auth and auth.username == app.config['HTTP_USER'] and auth.password == app.config["HTTP_PASS"]:
+            return f(*args, **kwargs)
+
+        return make_response("User not verified!", 401, {'WWW-Authenticate': 'Basic realm="Loging Required'})
+    return setAuth
 
 # Handle / route
 @app.route('/', methods=['GET'])
+@authentication
 def default():
     result = {"message": "Initial page"}
     return make_response(jsonify(result), 200)
@@ -25,6 +38,7 @@ def default():
 
 # POST /watch/
 @app.route('/info/v2/watch', methods=['POST'])
+@authentication
 def create_sku():
     try:
         if request.method == 'POST':            
