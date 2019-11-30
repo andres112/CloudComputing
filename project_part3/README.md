@@ -23,10 +23,10 @@ The web service has the following routes, where through HTTP request the service
 ![](images/dynamoDB.png)
 
 #### Lambda AWS 
-![](images/ApiGateway.png)
+![](images/FunctionLambda.png)
 
 #### API Gateway AWS 
-![](images/FunctionLambda.png)
+![](images/ApiGateway.png)
 
 #### SAMPLE GET
 https://7ypcpsqal4.execute-api.eu-north-1.amazonaws.com/dev/info/v2/watch/CV2115.FC6186
