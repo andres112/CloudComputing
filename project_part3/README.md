@@ -44,6 +44,3 @@ Execute it with a web client like POSTMAN or CURL with a simple body as follows:
 Before to the Docker part, the web service was tested in the in the swagger environment, this test was possible thanks to the _info_openapi_v2.yaml. The test got successful result.
 
 [Test Link](https://editor.swagger.io/) (It is required to import the _info_openapi_v2.yaml_ file)
-
-### Pending Things ☹️
-* The HTTP Basic Authentication generate issues to execute in API Gateway, therefore was not implemented.
