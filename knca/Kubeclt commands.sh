@@ -52,3 +52,9 @@ kubectl get rs -n testing
 
 # Get the rollout history of a deployment
 kubectl rollout history deploy/nginx -n testing
+
+# Get the rollout status of a deployment
+kubectl rollout status deploy/nginx -n testing
+
+# Modify replicas in running deployment
+kubectl scale deploy/nginx --replicas=3 -n testing; watch kubectl get pods -n testing
