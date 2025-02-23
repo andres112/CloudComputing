@@ -58,3 +58,6 @@ kubectl rollout status deploy/nginx -n testing
 
 # Modify replicas in running deployment
 kubectl scale deploy/nginx --replicas=3 -n testing; watch kubectl get pods -n testing
+
+# Set the image of a deployment to a new version
+kubectl set image deploy/nginx nginx=nginx:1.19.1 -n testing
