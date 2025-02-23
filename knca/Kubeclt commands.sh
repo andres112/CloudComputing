@@ -2,7 +2,10 @@
 kubectl create ns testing
 
 # Run a pod in the testing namespace
-kubectl run nginx --image=nginx -n testing
+kubectl run nginx --image=nginx -n testing 
+
+# Get all from all namespaces
+kubectl get all -A
 
 # Get the pod in the testing namespace
 kubectl get pods -n testing
@@ -37,3 +40,6 @@ kubectl explain pod.spec.restartPolicy
 
 # Command to monitor the pod until it is running
 until kubectl logs pod/countdown-pod -c init-countdown -n testing -f --pod-running-timeout=5m; do sleep 1; done; until kubectl logs pod/countdown-pod -c main-container -n testing -f --pod-running-timeout=5m; do sleep 1; done
+
+# Command to generate the yaml file for a deployment
+kubectl create deploy nginx --image=nginx -n testing --dry-run=client -o yaml | tee deployment.yaml | kubectl apply -f -
