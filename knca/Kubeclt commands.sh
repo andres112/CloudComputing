@@ -43,3 +43,12 @@ until kubectl logs pod/countdown-pod -c init-countdown -n testing -f --pod-runni
 
 # Command to generate the yaml file for a deployment
 kubectl create deploy nginx --image=nginx -n testing --dry-run=client -o yaml | tee deployment.yaml | kubectl apply -f -
+
+# Get deployment
+kubectl get deploy -n testing
+
+# Get ReplicaSet
+kubectl get rs -n testing
+
+# Get the rollout history of a deployment
+kubectl rollout history deploy/nginx -n testing
