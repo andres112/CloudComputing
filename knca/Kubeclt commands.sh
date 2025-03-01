@@ -103,3 +103,20 @@
   kubectl explain pod.spec.restartPolicy
   ```
 
+## **8️⃣ Service Management**
+- Expose a Deployment as a Service:
+  ```sh
+  kubectl expose deploy/nginx --port=8081 --target-port=80 -n testing
+  ```
+- Expose as a NodePort Service:
+  ```sh
+  kubectl expose deploy/nginx --port=8081 --target-port=80 --type=NodePort -n testing
+  ```
+- Get a Service:
+  ```sh
+  kubectl get svc/nginx -n testing
+  ```
+- Get the endpoints of a Service:
+  ```sh
+  kubectl get ep/nginx -n testing
+  ```
