@@ -124,3 +124,17 @@
   ```sh
   kubectl get ep/nginx -n testing
   ```
+
+## **9️⃣ Jobs & CronJobs**
+- Create a Job:
+  ```sh
+  kubectl create job python-log-job --image=python:3.9 -n testing -- /bin/sh -c 'python -c "import time; [print(f\"Processing task {i+1}\") or time.sleep(2) for i in range(10)]"'
+  ```
+- Get a Job:
+  ```sh
+  kubectl get job/python-log-job -n testing
+  ```
+- Get the logs of a Job:
+  ```sh
+  kubectl logs job/python-log-job -n testing
+  ```
