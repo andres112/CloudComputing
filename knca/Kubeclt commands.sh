@@ -112,6 +112,10 @@
   ```sh
   kubectl expose deploy/nginx --port=8081 --target-port=80 --type=NodePort -n testing
   ```
+- Expose as a LoadBalancer Service:
+  ```sh
+  kubectl expose deploy/nginx --port=8081 --target-port=80 --type=LoadBalancer -n testing
+  ```
 - Get a Service:
   ```sh
   kubectl get svc/nginx -n testing
