@@ -140,7 +140,7 @@
   ```
 - Create a CronJob:
   ```sh
-  kubectl create cronjob python-log-cronjob --image=python:3.9 -n testing --schedule="* * * * *" -- /bin/sh -c 'python -c "import time; [print(f\"Processing task {i+1}\") or time.sleep(2) for i in range(10)]"'
+  kubectl create cj python-log-cronjob --image=python:3.9 -n testing --schedule="* * * * *" -- /bin/sh -c 'python -c "import time; [print(f\"Processing task {i+1}\") or time.sleep(2) for i in range(10)]"'
   ```
 - Get a CronJob:
   ```sh
