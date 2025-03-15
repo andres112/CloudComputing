@@ -146,3 +146,17 @@
   ```sh
   kubectl get cj python-log-cronjob -n testing
   ```
+
+## **🔟 Configmaps**
+- Create a ConfigMap from literal:
+  ```sh
+  kubectl create configmap colour-configmap --from-literal=colour=blue --from-literal=KEY=value -n testing
+  ```
+- Create a ConfigMap from env file:
+  ```sh
+  kubectl create configmap app-config --from-env-file=app.env -n testing
+  ```
+- Create a ConfigMap from file:
+  ```sh
+  kubectl create configmap app-config --from-file=app.properties -n testing
+  ```
