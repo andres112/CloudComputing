@@ -160,3 +160,13 @@
   ```sh
   kubectl create configmap app-config --from-file=app.properties -n testing
   ```
+
+## **1️⃣1️⃣ Secrets**
+- Create a Secret from literal:
+  ```sh
+  kubectl create secret generic db-secret --from-literal=username=admin --from-literal=password=passw0rd -n testing
+  ```
+- Create a Secret from file:
+  ```sh
+  kubectl create secret generic db-secret --from-file=credentials.txt -n testing
+  ```
