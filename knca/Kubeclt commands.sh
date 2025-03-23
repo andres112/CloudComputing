@@ -50,6 +50,10 @@
   until kubectl logs pod/countdown-pod -c init-countdown -n testing -f --pod-running-timeout=5m; do sleep 1; done;
   until kubectl logs pod/countdown-pod -c main-container -n testing -f --pod-running-timeout=5m; do sleep 1; done
   ```
+- Get resources by label:
+  ```sh
+  kubectl get pods -l app=nginx -n testing
+  ```
 
 ## **4️⃣ Networking & Connectivity**
 - Port-forward the pod to localhost:
