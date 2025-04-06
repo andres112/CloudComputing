@@ -54,6 +54,10 @@
   ```sh
   kubectl get pods -l app=nginx -n testing
   ```
+- Get resources with level of verbosity:
+  ```sh
+  kubectl get pods -n testing -v=7
+  ```
 
 ## **4️⃣ Networking & Connectivity**
 - Port-forward the pod to localhost:
@@ -173,4 +177,14 @@
 - Create a Secret from file:
   ```sh
   kubectl create secret generic db-secret --from-file=credentials.txt -n testing
+  ```
+
+## **1️⃣2️⃣ RBAC **
+- Create a ClusterRole:
+  ```sh
+  kubectl create clusterrole pod-reader --verb=get,list,watch --resource=pods
+  ```
+- Create a ClusterRoleBinding:
+  ```sh
+  kubectl create clusterrolebinding pod-reader-binding --clusterrole=pod-reader --group=system:masters
   ```
