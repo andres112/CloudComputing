@@ -182,9 +182,9 @@
 ## **1️⃣2️⃣ RBAC **
 - Create a ClusterRole:
   ```sh
-  kubectl create clusterrole pod-reader --verb=get,list,watch --resource=pods
+  kubectl create clusterrole cluster-superhero --verb=get,list,watch --resource=pods
   ```
 - Create a ClusterRoleBinding:
   ```sh
-  kubectl create clusterrolebinding pod-reader-binding --clusterrole=pod-reader --group=system:masters
+  kubectl create clusterrolebinding cluster-superhero --clusterrole=cluster-superhero --group=cluster-superheroes
   ```
