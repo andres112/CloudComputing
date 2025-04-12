@@ -195,5 +195,18 @@
 - Auth can In:
   ```sh
   kubectl auth can-i get pods --as=cluster-superhero  OR 
-  kubectl auth can-i "*" "*" --as-group=cluster-superheroes --as="batman"
+  kubectl auth can-i "*" "*" --as-group=cluster-superheroes --as="batman" OR
+  kubectl auth can-i get pods --as=harry -n hogwarts # Just for specific namespace
+  ```
+- Create a Role:
+  ```sh
+  kubectl create role pod-reader --verb=get,list,watch --resource=pods -n hogwarts
+  ```
+- Create a RoleBinding:
+  ```sh
+  kubectl create rolebinding pod-reader-binding --role=pod-reader --user=harry -n hogwarts
+  ```
+- Create a RoleBinding with group:
+  ```sh
+  kubectl create rolebinding pod-reader-binding --role=pod-reader --group=gryffindor -n hogwarts
   ```
