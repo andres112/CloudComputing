@@ -180,6 +180,7 @@
   ```
 
 ## **1️⃣2️⃣ RBAC **
+# ClusterRole and ClusterRoleBinding
 - Create a ClusterRole:
   ```sh
   kubectl create clusterrole cluster-superhero --verb=get,list,watch --resource=pods
@@ -192,12 +193,17 @@
   ```sh
   kubectl create clusterrolebinding cluster-superhero --clusterrole=cluster-superhero --user=batman
   ```
+- Create a ClusterRoleBinding with service account:
+  ```sh
+  kubectl create clusterrolebinding cluster-superhero --clusterrole=cluster-superhero --serviceaccount=default:pod-sa
+  ```
 - Auth can In:
   ```sh
   kubectl auth can-i get pods --as=cluster-superhero  OR 
   kubectl auth can-i "*" "*" --as-group=cluster-superheroes --as="batman" OR
   kubectl auth can-i get pods --as=harry -n hogwarts # Just for specific namespace
   ```
+# Role and RoleBinding
 - Create a Role:
   ```sh
   kubectl create role pod-reader --verb=get,list,watch --resource=pods -n hogwarts
@@ -209,4 +215,13 @@
 - Create a RoleBinding with group:
   ```sh
   kubectl create rolebinding pod-reader-binding --role=pod-reader --group=gryffindor -n hogwarts
+  ```
+- Create a RoleBinding with service account:
+  ```sh
+  kubectl create rolebinding pod-reader-binding --role=pod-reader --serviceaccount=default:pod-sa -n hogwarts
+  ```
+# ServiceAccount
+- Create a ServiceAccount:
+  ```sh
+  kubectl create sa pod-sa -n hogwarts or 
   ```
