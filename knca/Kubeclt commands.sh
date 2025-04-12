@@ -184,9 +184,13 @@
   ```sh
   kubectl create clusterrole cluster-superhero --verb=get,list,watch --resource=pods
   ```
-- Create a ClusterRoleBinding:
+- Create a ClusterRoleBinding with group:
   ```sh
   kubectl create clusterrolebinding cluster-superhero --clusterrole=cluster-superhero --group=cluster-superheroes
+  ```
+- Create a ClusterRoleBinding with user:
+  ```sh
+  kubectl create clusterrolebinding cluster-superhero --clusterrole=cluster-superhero --user=batman
   ```
 - Auth can In:
   ```sh
