@@ -188,3 +188,8 @@
   ```sh
   kubectl create clusterrolebinding cluster-superhero --clusterrole=cluster-superhero --group=cluster-superheroes
   ```
+- Auth can In:
+  ```sh
+  kubectl auth can-i get pods --as=cluster-superhero  OR 
+  kubectl auth can-i "*" "*" --as-group=cluster-superheroes --as="batman"
+  ```
