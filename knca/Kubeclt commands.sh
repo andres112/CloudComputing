@@ -223,5 +223,5 @@
 # ServiceAccount
 - Create a ServiceAccount:
   ```sh
-  kubectl create sa pod-sa -n hogwarts or 
+  kubectl create sa pod-sa -n hogwarts 
   ```
