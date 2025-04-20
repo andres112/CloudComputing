@@ -227,7 +227,15 @@
   ```
 
 ## **1️⃣3️⃣ Storage Management**
-- Get StorageClass:
+- Get StorageClass: StorageClass are cluster-wide resources
   ```sh
   kubectl get sc
+  ```
+- Get PersistentVolume: PV are cluster-wide resources
+  ```sh
+  kubectl get pv
+  ```
+- Get PersistentVolumeClaim: PVC are namespace-scoped resources
+  ```sh
+  kubectl get pvc -n testing
   ```
