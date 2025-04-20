@@ -225,3 +225,9 @@
   ```sh
   kubectl create sa pod-sa -n hogwarts 
   ```
+
+## **1️⃣3️⃣ Storage Management**
+- Get StorageClass:
+  ```sh
+  kubectl get sc
+  ```
