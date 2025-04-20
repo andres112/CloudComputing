@@ -1,0 +1,76 @@
+# Manually created PV and PVC
+## PV
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: manual-pv001
+spec:
+  storageClassName: local-path
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/lib/rancher/k3s/storage/manual-pv001"
+    type: DirectoryOrCreate
+---  
+## PVC manual-claim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata: 
+  name: manual-claim
+spec:
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: manual-pv001
+  resources:
+    requests:
+      storage: 10Gi
+---
+## PVC dynamic-claim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata: 
+  name: dynamic-claim
+  namespace: testing
+spec:
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+# Pod using the PVCs
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ubuntu
+  namespace: testing
+  labels:
+    app: ubuntu
+spec:
+  containers:
+    - name: ubuntu
+      image: ubuntu:latest
+      command: 
+        - sleep
+        - "3600"
+      volumeMounts:
+        - mountPath: /mnt/manual
+          name: manual-volume
+        - mountPath: /mnt/dynamic
+          name: dynamic-volume
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+  volumes:
+    - name: manual-volume
+      persistentVolumeClaim:
+        claimName: manual-claim
+    - name: dynamic-volume
+      persistentVolumeClaim:
+        claimName: dynamic-claim
