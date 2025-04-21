@@ -66,7 +66,8 @@
   ```
 - Run a temporary pod to test connectivity:
   ```sh
-  kubectl run -it --rm curl-tool --image=curlimages/curl --restart=Never -- http://10.42.0.5
+  kubectl run -it --rm curl-tool --image=curlimages/curl --restart=Never -- sh
+  then curl http://nginx:80
   ```
 
 ## **5️⃣ Deployments & Replica Management**
