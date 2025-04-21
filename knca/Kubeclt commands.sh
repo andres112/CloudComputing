@@ -132,6 +132,10 @@
   ```sh
   kubectl get ep/nginx -n testing
   ```
+- Create headless service:
+  ```sh
+  kubectl create svc clusterip nginx --cluster-ip=None -n testing
+  ```
 
 ## **9️⃣ Jobs & CronJobs**
 - Create a Job:
