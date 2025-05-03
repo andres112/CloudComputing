@@ -250,3 +250,16 @@
   ```sh
   kubectl create pdb nginx-pdb --selector=app=nginx --min-available=1 -n testing
   ```
+- Cordon a node:
+  ```sh
+  kubectl cordon <node-name>
+  ```
+- Drain a node:
+  ```sh
+  kubectl drain <node-name> --ignore-daemonsets --delete-local-data
+  ```
+- Uncordon a node:
+  ```sh
+  kubectl uncordon <node-name>
+  ```
+  
