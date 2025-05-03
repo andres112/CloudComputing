@@ -244,3 +244,9 @@
   ```sh
   kubectl get pvc -n testing
   ```
+
+## **1️⃣4️⃣ Pod Disruption Budgets**
+- Create a PodDisruptionBudget for a Deployment with label `app=nginx`:
+  ```sh
+  kubectl create pdb nginx-pdb --selector=app=nginx --min-available=1 -n testing
+  ```
