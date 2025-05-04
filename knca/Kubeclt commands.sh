@@ -262,4 +262,11 @@
   ```sh
   kubectl uncordon <node-name>
   ```
-  
+
+## **1️⃣5️⃣ HELM**
+
+helm repo add bitnami https://charts.bitnami.com/bitnami    # Add a chart repository
+helm search repo nginx                                       # Search for charts
+helm install my-release bitnami/nginx                        # Install a chart
+helm upgrade my-release bitnami/nginx                        # Upgrade the release
+helm uninstall my-release                                   # Uninstall the release
