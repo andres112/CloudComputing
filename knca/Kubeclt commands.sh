@@ -267,6 +267,7 @@
 
 helm repo add bitnami https://charts.bitnami.com/bitnami    # Add a chart repository
 helm search repo nginx                                       # Search for charts
-helm install my-release bitnami/nginx                        # Install a chart
-helm upgrade my-release bitnami/nginx                        # Upgrade the release
-helm uninstall my-release                                   # Uninstall the release
+helm install my-release bitnami/nginx -n testing             # Install a chart
+helm upgrade my-release bitnami/nginx -n testing             # Upgrade the release
+helm uninstall my-release -n testing                         # Uninstall the release
+helm list -A                                               # List all releases
