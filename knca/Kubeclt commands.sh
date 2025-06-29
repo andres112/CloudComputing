@@ -41,6 +41,10 @@
   ```sh
   kubectl logs -f --tail=500 pods/nginx -n testing
   ```
+- Follow the logs od a pod since a specific time:
+  ```sh
+  kubectl logs -f --since=1h pods/nginx -n testing
+  ```
 - Get logs from a previous instance of a container:
   ```sh
   kubectl logs -p pods/nginx -n testing
